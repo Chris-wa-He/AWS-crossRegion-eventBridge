@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Create cross region Event Bridge for EC2 state change & AWS health."
+
+Parameters:
+  targetEventBridgeARN:
+    Type: String
+    Description: "Target event bridge arn."
+
+Resources:
+  EventBridgeIAMrole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                !Sub events.amazonaws.com
+            Action: sts:AssumeRole
+        Path: /
+        Policies:
+        - PolicyName: PutEventsDestinationBus
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+            - Effect: Allow
+              Action:
+              - events:PutEvents
+              Resource:
+              - !Ref targetEventBridgeARN
+
+  EventRuleEC2StateChange:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Notification：EC2 instance state change
+      EventPattern: 
+        source: 
+          - aws.ec2
+        detail-type: 
+          - EC2 Instance State-change Notification
+        detail:
+          state:
+            - running
+            - stopped
+            - terminated
+      Targets:
+        - Arn: !Ref targetEventBridgeARN
+          Id: Send2EB
+          RoleArn: !GetAtt EventBridgeIAMrole.Arn
+
+  EventRuleEC2Health:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Notification：AWS Health event
+      EventPattern: 
+        source: 
+          - aws.health
+        detail-type: 
+          - AWS Health Event
+      Targets:
+        - Arn: !Ref targetEventBridgeARN
+          Id: Send2EB
+          RoleArn: !GetAtt EventBridgeIAMrole.Arn
+

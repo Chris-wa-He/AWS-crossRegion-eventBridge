@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Create stack set admin & execution role"
+
+Parameters:
+  AdministratorAccountId:
+    Type: String
+    Description: AWS Account Id of the administrator account (the account in which StackSets will be created).
+    MaxLength: 12
+    MinLength: 12
+
+Resources:
+  StackSetAdministrationRole:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "https://s3.amazonaws.com/cloudformation-stackset-sample-templates-us-east-1/AWSCloudFormationStackSetAdministrationRole.yml"
+
+  StackSetExecutionRole:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters: 
+        AdministratorAccountId: !Ref AdministratorAccountId
+      TemplateURL: "https://s3.amazonaws.com/cloudformation-stackset-sample-templates-us-east-1/AWSCloudFormationStackSetExecutionRole.yml"
