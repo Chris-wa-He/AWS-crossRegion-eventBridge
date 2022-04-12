@@ -16,7 +16,7 @@ Resources:
           - Effect: Allow
             Principal:
               Service:
-                !Sub events.amazonaws.com
+                - events.amazonaws.com
             Action: sts:AssumeRole
         Path: /
         Policies:
@@ -49,7 +49,7 @@ Resources:
           Id: Send2EB
           RoleArn: !GetAtt EventBridgeIAMrole.Arn
 
-  EventRuleEC2Health:
+  EventRuleAwsHealth:
     Type: AWS::Events::Rule
     Properties:
       Description: Notification：AWS Health event
@@ -62,4 +62,3 @@ Resources:
         - Arn: !Ref targetEventBridgeARN
           Id: Send2EB
           RoleArn: !GetAtt EventBridgeIAMrole.Arn
-
