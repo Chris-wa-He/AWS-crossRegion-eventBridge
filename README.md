@@ -29,3 +29,6 @@ This sample co-works with [AWS-Lambda-notifier](https://github.com/Chris-wa-He/A
 
 Deploy these two solutions and start EC2 in different AWS region, test result will as below:
 ![TestResult](images/testResult.png)
+
+## History
+2022-11-4: Add rule to capture GuardDuty finding.

@@ -62,3 +62,17 @@ Resources:
         - Arn: !Ref targetEventBridgeARN
           Id: Send2EB
           RoleArn: !GetAtt EventBridgeIAMrole.Arn
+
+  EventRuleDuardDutyFinding:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Notification rule：DuardDuty Finding
+      EventPattern:
+        source:
+          - aws.guardduty
+        detail-type:
+          - GuardDuty Finding
+      Targets:
+        - Arn: !Ref targetEventBridgeARN
+          Id: Send2EB
+          RoleArn: !GetAtt EventBridgeIAMrole.Arn
